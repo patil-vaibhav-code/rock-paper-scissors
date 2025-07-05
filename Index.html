@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors with Sound</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #121212;
+      color: white;
+      padding-top: 50px;
+    }
+
+    .choices button {
+      padding: 15px 25px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background: #333;
+      color: white;
+      transition: transform 0.2s;
+    }
+
+    .choices button:hover {
+      background: #00d4ff;
+      color: black;
+    }
+
+    .choices button:active {
+      transform: scale(1.1);
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #00ffab;
+      min-height: 30px;
+    }
+
+    #score {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #ccc;
+    }
+
+    .shake {
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Rock Paper Scissors</h1>
+  <p>Choose your move:</p>
+
+  <div class="choices">
+    <button onclick="play('rock', this)">Rock</button>
+    <button onclick="play('paper', this)">Paper</button>
+    <button onclick="play('scissors', this)">Scissors</button>
+  </div>
+
+  <div id="result"></div>
+  <div id="score">You: 0 | Computer: 0</div>
+
+  <!-- Reliable MP3 Sound Sources (GitHub Raw URLs) -->
+  <audio id="click-sound" src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/beep.mp3" preload="auto"></audio>
+  <audio id="win-sound" src="https://freesound.org/data/previews/320/320655_5260877-lq.mp3" preload="auto"></audio>
+  <audio id="lose-sound" src="https://freesound.org/data/previews/337/337049_3237490-lq.mp3" preload="auto"></audio>
+
+  <script>
+    let userScore = 0;
+    let computerScore = 0;
+
+    function play(userChoice, button) {
+      const clickSound = document.getElementById("click-sound");
+      const winSound = document.getElementById("win-sound");
+      const loseSound = document.getElementById("lose-sound");
+
+      clickSound.currentTime = 0;
+      clickSound.play();
+
+      button.classList.add("shake");
+      setTimeout(() => button.classList.remove("shake"), 500);
+
+      const choices = ['rock', 'paper', 'scissors'];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
+
+      let result = "";
+
+      if (userChoice === computerChoice) {
+        result = "It's a tie! You both chose " + userChoice + ".";
+      } else if (
+        (userChoice === 'rock' && computerChoice === 'scissors') ||
+        (userChoice === 'paper' && computerChoice === 'rock') ||
+        (userChoice === 'scissors' && computerChoice === 'paper')
+      ) {
+        result = "You win! " + userChoice + " beats " + computerChoice + ".";
+        userScore++;
+        winSound.currentTime = 0;
+        winSound.play();
+      } else {
+        result = "You lose! " + computerChoice + " beats " + userChoice + ".";
+        computerScore++;
+        loseSound.currentTime = 0;
+        loseSound.play();
+      }
+
+      document.getElementById("result").innerText = result;
+      document.getElementById("score").innerText = `You: ${userScore} | Computer: ${computerScore}`;
+    }
+  </script>
+
+</body>
+</html>
