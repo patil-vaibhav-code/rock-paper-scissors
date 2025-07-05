@@ -5,17 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rock Paper Scissors - By Vaibhav Patil</title>
   <style>
-    body {
-      background-color: #121212;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #ffffff;
-      text-align: center;
-      padding: 50px 20px;
+    :root {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --button-bg: #222;
+      --button-hover: #00d4ff;
+      --result-win: #00ffab;
+      --result-lose: #ff4c4c;
+      --result-tie: #f0c674;
     }
 
-    h1 {
-      margin-bottom: 5px;
+    body.light {
+      --bg-color: #f0f0f0;
+      --text-color: #000000;
+      --button-bg: #dddddd;
+      --button-hover: #222;
     }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    h1 { margin-bottom: 5px; }
 
     p.subtitle {
       color: #aaaaaa;
@@ -23,24 +39,48 @@
     }
 
     .choices {
-      margin-top: 30px;
+      margin: 30px auto 10px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .choice {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .choices button {
-      padding: 15px 30px;
-      margin: 10px;
-      font-size: 18px;
-      background-color: #333;
-      color: white;
+      font-size: 40px;
+      padding: 20px;
+      width: 100px;
+      height: 100px;
       border: none;
-      border-radius: 8px;
+      border-radius: 15px;
+      background-color: var(--button-bg);
+      color: var(--text-color);
       cursor: pointer;
-      transition: 0.2s ease;
+      transition: transform 0.2s ease, background 0.3s;
+      animation: float 2s ease-in-out infinite;
     }
 
     .choices button:hover {
-      background-color: #00d4ff;
-      color: #000;
+      background-color: var(--button-hover);
+      color: black;
+    }
+
+    .label {
+      margin-top: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      color: var(--text-color);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
     #result {
@@ -49,22 +89,42 @@
       min-height: 30px;
     }
 
-    #result.win {
-      color: #00ffab;
-    }
-
-    #result.lose {
-      color: #ff4c4c;
-    }
-
-    #result.tie {
-      color: #f0c674;
-    }
+    #result.win { color: var(--result-win); }
+    #result.lose { color: var(--result-lose); }
+    #result.tie  { color: var(--result-tie); }
 
     #score {
       margin-top: 10px;
       font-size: 18px;
       color: #cccccc;
+    }
+
+    #history-container {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .btn-group {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-group button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: var(--button-bg);
+      border: none;
+      border-radius: 8px;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+
+    .btn-group button:hover {
+      background: var(--button-hover);
     }
 
     footer {
@@ -80,36 +140,66 @@
   <p class="subtitle">A fun browser game by <strong>Vaibhav Patil</strong></p>
 
   <div class="choices">
-    <button onclick="play('rock')">🪨 Rock</button>
-    <button onclick="play('paper')">📄 Paper</button>
-    <button onclick="play('scissors')">✂️ Scissors</button>
+    <div class="choice">
+      <button onclick="play('rock')">🪨</button>
+      <div class="label">Rock</div>
+    </div>
+    <div class="choice">
+      <button onclick="play('paper')">📄</button>
+      <div class="label">Paper</div>
+    </div>
+    <div class="choice">
+      <button onclick="play('scissors')">✂️</button>
+      <div class="label">Scissors</div>
+    </div>
   </div>
 
   <div id="result"></div>
   <div id="score">You: 0 | Computer: 0</div>
 
-  <!-- Sound Effect -->
+  <div class="btn-group">
+    <button onclick="resetScore()">🔄 Reset Score</button>
+    <button onclick="toggleTheme()">🌓 Toggle Theme</button>
+    <button onclick="toggleMute()" id="muteBtn">🔊 Mute</button>
+    <button onclick="toggleHistory()">📜 Show History</button>
+  </div>
+
+  <div id="history-container">
+    <div id="history"></div>
+  </div>
+
   <audio id="click-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+  <audio id="bg-music" src="https://www.bensound.com/bensound-music/bensound-ukulele.mp3" loop></audio>
 
   <footer>© 2025 Vaibhav Patil. All rights reserved.</footer>
 
   <script>
     let userScore = 0;
     let computerScore = 0;
+    const historyList = [];
+    let isMuted = false;
+
+    document.body.addEventListener('click', () => {
+      const music = document.getElementById('bg-music');
+      if (music.paused && !isMuted) music.play();
+    }, { once: true });
 
     function play(userChoice) {
       const clickSound = document.getElementById('click-sound');
       const resultEl = document.getElementById('result');
       const scoreEl = document.getElementById('score');
+      const historyEl = document.getElementById('history');
 
-      clickSound.currentTime = 0;
-      clickSound.play();
+      if (!isMuted) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+      }
 
       const choices = ['rock', 'paper', 'scissors'];
-      const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
 
       let resultText = '';
-      resultEl.className = ''; // reset class
+      resultEl.className = '';
 
       if (userChoice === computerChoice) {
         resultText = `🤝 It's a tie! You both chose ${userChoice}.`;
@@ -130,6 +220,40 @@
 
       resultEl.textContent = resultText;
       scoreEl.textContent = `You: ${userScore} | Computer: ${computerScore}`;
+
+      historyList.unshift(resultText);
+      document.getElementById('history').innerHTML = `<strong>Game History:</strong><br>` + historyList.slice(0, 5).map(h => '• ' + h).join('<br>');
+    }
+
+    function resetScore() {
+      userScore = 0;
+      computerScore = 0;
+      historyList.length = 0;
+      document.getElementById('score').textContent = `You: 0 | Computer: 0`;
+      document.getElementById('result').textContent = '';
+      document.getElementById('result').className = '';
+      document.getElementById('history').innerHTML = '';
+      document.getElementById('history-container').style.display = 'none';
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+    }
+
+    function toggleMute() {
+      const bgMusic = document.getElementById('bg-music');
+      isMuted = !isMuted;
+      document.getElementById('muteBtn').textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
+      if (isMuted) {
+        bgMusic.pause();
+      } else {
+        bgMusic.play();
+      }
+    }
+
+    function toggleHistory() {
+      const container = document.getElementById('history-container');
+      container.style.display = (container.style.display === 'none') ? 'block' : 'none';
     }
   </script>
 
