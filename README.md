@@ -1,46 +1,46 @@
-# 🎮 Rock-Paper-Scissors Game
+# Rock Paper Scissors 🎮  
+A simple and fun Rock-Paper-Scissors game you can play in your browser — designed and built by **Vaibhav Patil**.
 
-A fun and interactive **Rock-Paper-Scissors** game built using **HTML, CSS, and JavaScript**.  
-This project runs entirely in the browser and includes simple animations and sound effects to enhance the experience.
-
----
-
-## 🚀 Live Demo
-
-👉 **Play Now**: [https://patil-vaibhav-code.github.io/rock-paper-scissors/](https://patil-vaibhav-code.github.io/rock-paper-scissors/)
+### 🔗 Try it here:  
+[https://patil-vaibhav-code.github.io/rock-paper-scissors](https://patil-vaibhav-code.github.io/rock-paper-scissors)
 
 ---
 
-## 🕹️ Features
+## 🧩 About the Game
 
-- Classic Rock-Paper-Scissors gameplay
-- Scoreboard to track wins and losses
-- Sound effects for clicks, wins, and losses
-- Button animation on selection
-- Fully responsive and mobile-friendly
+This is the classic Rock-Paper-Scissors game where you play against the computer. Just click one of the buttons — 🪨 Rock, 📄 Paper, or ✂️ Scissors — and see who wins!
+
+It includes:
+
+- 🔊 Sound effects for button clicks and background music  
+- 🌙 Light/Dark mode toggle  
+- 🔄 Score reset button  
+- 📜 Game history (last 5 rounds)  
+- 🔇 Mute/unmute background music  
+- 💫 Smooth animations and emoji icons  
+
+The whole project is written in plain **HTML, CSS, and JavaScript** — no libraries or frameworks used.
 
 ---
 
-## 🛠️ Technologies Used
+## 📁 How to Use It
 
-- HTML5
-- CSS3
-- JavaScript (Vanilla)
+You don’t need to install anything. Just open this link in your browser:
+
+👉 [Play the Game](https://patil-vaibhav-code.github.io/rock-paper-scissors)
+
+Or, if you want to run it locally:
+
+1. Download or clone this repo  
+2. Open `index.html` in any modern web browser
 
 ---
 
-## 📁 How to Use Locally
+## ✍️ Created By
 
-To run the project on your local machine:
+**Vaibhav Patil**  
+GitHub: [@patil-vaibhav-code](https://github.com/patil-vaibhav-code)
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/patil-vaibhav-code/rock-paper-scissors.git
+---
 
-Navigate into the project folder:
-cd rock-paper-scissors
-
-
-
-
-
+Thanks for playing! 🎉  
